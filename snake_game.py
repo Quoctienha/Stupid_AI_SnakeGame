@@ -192,7 +192,10 @@ class AI:
     def DFS(self, snake, target):
         # Khởi tạo stack DFS với vị trí đầu, thân rắn hiện tại và đường đi
         stack = [(snake.body, [])]  # (body_positions, path)
-        visited = set(tuple(part) for part in snake.body)  # Theo dõi các vị trí cơ thể ban đầu
+        if target == snake.body[-1]:
+            visited = set(tuple((part.x, part.y) for part in snake.body[:-1]))  # Theo dõi các vị trí cơ thể đã ghé thăm
+        else:
+            visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
 
         while stack:
             body_positions, path = stack.pop()
@@ -244,7 +247,10 @@ class AI:
     def BFS(self, snake, target):
         # Khởi tạo hàng đợi BFS với vị trí đầu, thân rắn hiện tại và đường đi
         queue = deque([(snake.body[:], [])])  # (body_positions, path)
-        visited = set(tuple(part) for part in snake.body)  # Theo dõi các vị trí cơ thể ban đầu
+        if target == snake.body[-1]:
+            visited = set(tuple((part.x, part.y) for part in snake.body[:-1]))  # Theo dõi các vị trí cơ thể đã ghé thăm
+        else:
+            visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
 
         while queue:
             body_positions, path = queue.popleft()
@@ -293,7 +299,10 @@ class AI:
     def UCS(self, snake, target):
         # Khởi tạo priority queue với chi phí ban đầu là 0, vị trí đầu, và thân rắn hiện tại
         priority_queue = [(0, tuple((part.x, part.y) for part in snake.body), [])]  # (cost, body_positions, path)
-        visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể ban đầu
+        if target == snake.body[-1]:
+            visited = set(tuple((part.x, part.y) for part in snake.body[:-1]))  # Theo dõi các vị trí cơ thể đã ghé thăm
+        else:
+            visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
 
         while priority_queue:
             cost, body_positions, path = heapq.heappop(priority_queue)
@@ -346,7 +355,10 @@ class AI:
     def GREEDY(self, snake, target):
         # Khởi tạo priority queue với khoảng cách ban đầu là 0, vị trí đầu và thân rắn hiện tại
         priority_queue = [(0, tuple((part.x, part.y) for part in snake.body), [])]  # (distance, body_positions, path)
-        visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
+        if target == snake.body[-1]:
+            visited = set(tuple((part.x, part.y) for part in snake.body[:-1]))  # Theo dõi các vị trí cơ thể đã ghé thăm
+        else:
+            visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
 
         while priority_queue:
             _, body_positions, path = heapq.heappop(priority_queue)
@@ -399,8 +411,11 @@ class AI:
     def Astar(self, snake, target):
         # Khởi tạo priority queue với khoảng cách ban đầu là 0, vị trí đầu và thân rắn hiện tại
         priority_queue = [(0,0, tuple((part.x, part.y) for part in snake.body), [])]  # (cost, body_positions, path)
-        visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
-
+        if target == snake.body[-1]:
+            visited = set(tuple((part.x, part.y) for part in snake.body[:-1]))  # Theo dõi các vị trí cơ thể đã ghé thăm
+        else:
+            visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
+            
         while priority_queue:
             f_cost, g_cost, body_positions, path = heapq.heappop(priority_queue)
             current_head = Vector2(body_positions[0][0], body_positions[0][1])  # Tạo lại current_head từ tuple
@@ -416,7 +431,9 @@ class AI:
 
                 # Tạo vị trí thân rắn mới bằng cách di chuyển
                 new_body_positions = [new_head_tuple] + list(body_positions[:-1])
-
+                
+               
+                
                 # Kiểm tra điều kiện: trong bounds, chưa duyệt, và không va vào thân
                 if (new_head_tuple not in visited 
                     and self.is_position_free(new_head, new_body_positions[1:])):
