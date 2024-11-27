@@ -182,9 +182,9 @@ class AI:
         for direction in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
             new_head = current_head + direction
             if self.is_position_free(new_head, snake.body):
-                return [direction]  # Trả về một bước đi an toàn
+                return [direction],[]  # Trả về một bước đi an toàn
 
-        return []  # Nếu không có bước đi an toàn nào, trả về rỗng
+        return [],[]  # Nếu không có bước đi an toàn nào, trả về rỗng
     
     
     
