@@ -196,14 +196,18 @@ class AI:
             visited = set(tuple((part.x, part.y) for part in snake.body[:-1]))  # Theo dõi các vị trí cơ thể đã ghé thăm
         else:
             visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
-
+            
+        visited_states = []  # Lưu trạng thái để vẽ
         while stack:
             body_positions, path = stack.pop()
             current_head = body_positions[0]  # Đầu hiện tại của rắn
-
+            
+            # Thêm trạng thái vào danh sách để vẽ
+            visited_states.append((current_head.x, current_head.y))
+            
             # Kiểm tra nếu đầu rắn ở vị trí của quả
             if current_head == target:
-                return path
+                return path, visited_states
 
             # Duyệt qua mỗi hướng di chuyển (phải, trái, xuống, lên)
             for direction in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
@@ -223,20 +227,21 @@ class AI:
                     stack.append((new_body_positions, path + [direction]))
 
         # Nếu không tìm thấy đường đi
-        return []
+        return [], visited_states
    
     def DFS_with_space_creation(self, snake, fruit):
+            
         # Tìm đường đến quả táo
-        path_to_fruit = self.DFS(snake, fruit.pos)
+        path_to_fruit, visited_states = self.DFS(snake, fruit.pos)
         if path_to_fruit:
-            return path_to_fruit  # Nếu có đường đến quả táo, đi theo nó
+            return path_to_fruit, visited_states  # Nếu có đường đến quả táo, đi theo nó
 
         # Nếu không tìm thấy đường đến quả táo, tìm đường đến đuôi để tạo không gian
         tail_pos = snake.body[-1]  # Vị trí của đuôi rắn
-        path_to_tail = self.DFS(snake, tail_pos)
+        path_to_tail, visited_states = self.DFS(snake, tail_pos)
         
         if path_to_tail:
-            return path_to_tail  # Đi theo đuôi để tạo không gian
+            return path_to_tail, visited_states  # Đi theo đuôi để tạo không gian
 
         # Nếu không tìm thấy cả đường đến quả táo và đuôi, tìm một bước an toàn bất kỳ
         return self.find_safe_move(snake)
@@ -251,14 +256,17 @@ class AI:
             visited = set(tuple((part.x, part.y) for part in snake.body[:-1]))  # Theo dõi các vị trí cơ thể đã ghé thăm
         else:
             visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
-        
+        visited_states = []  # Lưu trạng thái để vẽ
         while queue:
             body_positions, path = queue.popleft()
             current_head = body_positions[0]  # Đầu hiện tại của rắn
-
+            
+            # Thêm trạng thái vào danh sách để vẽ
+            visited_states.append((current_head.x, current_head.y))
+            
             # Kiểm tra nếu đầu rắn ở vị trí đích
             if current_head == target:
-                return path
+                return path, visited_states
 
             # Duyệt qua mỗi hướng di chuyển (phải, trái, xuống, lên)
             for direction in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
@@ -276,20 +284,20 @@ class AI:
                     queue.append((new_body_positions, path + [direction]))
 
         # Nếu không tìm thấy đường đi
-        return []
+        return [], visited_states
     
     def BFS_with_space_creation(self, snake, fruit):
         # Tìm đường đến quả táo
-        path_to_fruit = self.BFS(snake, fruit.pos)
+        path_to_fruit, visited_states = self.BFS(snake, fruit.pos)
         if path_to_fruit:
-            return path_to_fruit  # Nếu có đường đến quả táo, đi theo nó
+            return path_to_fruit, visited_states  # Nếu có đường đến quả táo, đi theo nó
 
         # Nếu không tìm thấy đường đến quả táo, tìm đường đến đuôi để tạo không gian
         tail_pos = snake.body[-1]  # Vị trí của đuôi rắn
-        path_to_tail = self.BFS(snake, tail_pos)
+        path_to_tail, visited_states = self.BFS(snake, tail_pos)
         
         if path_to_tail:
-            return path_to_tail  # Đi theo đuôi để tạo không gian
+            return path_to_tail, visited_states  # Đi theo đuôi để tạo không gian
 
         # Nếu không tìm thấy cả đường đến quả táo và đuôi, tìm một bước an toàn bất kỳ
         return self.find_safe_move(snake)
@@ -303,14 +311,18 @@ class AI:
             visited = set(tuple((part.x, part.y) for part in snake.body[:-1]))  # Theo dõi các vị trí cơ thể đã ghé thăm
         else:
             visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
-
+            
+        visited_states = []  # Lưu trạng thái để vẽ
         while priority_queue:
             cost, body_positions, path = heapq.heappop(priority_queue)
             current_head = Vector2(body_positions[0][0], body_positions[0][1])  # Tạo lại current_head từ tuple
-
+            
+            # Thêm trạng thái vào danh sách để vẽ
+            visited_states.append((current_head.x, current_head.y))
+            
             # Kiểm tra nếu đầu rắn ở vị trí của quả
             if current_head == target:
-                return path
+                return path, visited_states
 
             # Duyệt qua mỗi hướng di chuyển (phải, trái, xuống, lên)
             for direction in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
@@ -332,20 +344,20 @@ class AI:
                     heapq.heappush(priority_queue, (new_cost, tuple(new_body_positions), path + [direction]))
 
         # Nếu không tìm thấy đường đi
-        return []
+        return [], visited_states
     
     def UCS_with_space_creation(self, snake, fruit):
         # Tìm đường đến quả táo
-        path_to_fruit = self.UCS(snake, fruit.pos)
+        path_to_fruit, visited_states = self.UCS(snake, fruit.pos)
         if path_to_fruit:
-            return path_to_fruit  # Nếu có đường đến quả táo, đi theo nó
+            return path_to_fruit, visited_states  # Nếu có đường đến quả táo, đi theo nó
 
         # Nếu không tìm thấy đường đến quả táo, tìm đường đến đuôi để tạo không gian
         tail_pos = snake.body[-1]  # Vị trí của đuôi rắn
-        path_to_tail = self.UCS(snake, tail_pos)
+        path_to_tail, visited_states = self.UCS(snake, tail_pos)
         
         if path_to_tail:
-            return path_to_tail  # Đi theo đuôi để tạo không gian
+            return path_to_tail, visited_states  # Đi theo đuôi để tạo không gian
 
         # Nếu không tìm thấy cả đường đến quả táo và đuôi, tìm một bước an toàn bất kỳ
         return self.find_safe_move(snake)
@@ -359,14 +371,18 @@ class AI:
             visited = set(tuple((part.x, part.y) for part in snake.body[:-1]))  # Theo dõi các vị trí cơ thể đã ghé thăm
         else:
             visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
-
+        visited_states = []  # Lưu trạng thái để vẽ
+        
         while priority_queue:
             _, body_positions, path = heapq.heappop(priority_queue)
             current_head = Vector2(body_positions[0][0], body_positions[0][1])  # Tạo lại current_head từ tuple
-
+            
+            # Thêm trạng thái vào danh sách để vẽ
+            visited_states.append((current_head.x, current_head.y))
+            
             # Kiểm tra nếu đầu rắn ở vị trí của quả
             if current_head == target:
-                return path
+                return path, visited_states
 
             # Duyệt qua mỗi hướng di chuyển (phải, trái, xuống, lên)
             for direction in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
@@ -388,20 +404,20 @@ class AI:
                     heapq.heappush(priority_queue, (distance_to_fruit, tuple(new_body_positions), path + [direction]))
 
         # Nếu không tìm thấy đường đi
-        return []
+        return [], visited_states
     
     def GREEDY_with_space_creation(self, snake, fruit):
         # Tìm đường đến quả táo
-        path_to_fruit = self.GREEDY(snake, fruit.pos)
+        path_to_fruit, visited_states = self.GREEDY(snake, fruit.pos)
         if path_to_fruit:
-            return path_to_fruit  # Nếu có đường đến quả táo, đi theo nó
+            return path_to_fruit, visited_states  # Nếu có đường đến quả táo, đi theo nó
 
         # Nếu không tìm thấy đường đến quả táo, tìm đường đến đuôi để tạo không gian
         tail_pos = snake.body[-1]  # Vị trí của đuôi rắn
-        path_to_tail = self.GREEDY(snake, tail_pos)
+        path_to_tail, visited_states = self.GREEDY(snake, tail_pos)
         
         if path_to_tail:
-            return path_to_tail  # Đi theo đuôi để tạo không gian
+            return path_to_tail, visited_states  # Đi theo đuôi để tạo không gian
 
         # Nếu không tìm thấy cả đường đến quả táo và đuôi, tìm một bước an toàn bất kỳ
         return self.find_safe_move(snake)
@@ -415,14 +431,17 @@ class AI:
             visited = set(tuple((part.x, part.y) for part in snake.body[:-1]))  # Theo dõi các vị trí cơ thể đã ghé thăm
         else:
             visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
-            
+        visited_states = []
         while priority_queue:
             f_cost, g_cost, body_positions, path = heapq.heappop(priority_queue)
             current_head = Vector2(body_positions[0][0], body_positions[0][1])  # Tạo lại current_head từ tuple
-
+            
+            # Thêm trạng thái vào danh sách để vẽ
+            visited_states.append((current_head.x, current_head.y))
+            
             # Kiểm tra nếu đầu rắn ở vị trí của quả
             if current_head == target:
-                return path
+                return path, visited_states
 
             # Duyệt qua mỗi hướng di chuyển (phải, trái, xuống, lên)
             for direction in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
@@ -438,17 +457,6 @@ class AI:
                 if (new_head_tuple not in visited 
                     and self.is_position_free(new_head, new_body_positions[1:])):
 
-                    # Tính toán chi phí thực tế (g_cost) và heuristic (h_cost)
-                    # if len(path):
-                    #     if direction == path[0]:
-                    #         g_cost = g_cost + 10
-                    #     else:
-                    #         g_cost = g_cost + 14
-                    # else:
-                    #     if direction == snake.direction:
-                    #         g_cost = g_cost + 10
-                    #     else:
-                    #         g_cost = g_cost + 14
                     g_cost = g_cost + 1
                     h_cost = abs(new_head.x - target.x) + abs(new_head.y - target.y)
                 
@@ -457,20 +465,20 @@ class AI:
                     heapq.heappush(priority_queue, (g_cost + h_cost, g_cost , tuple(new_body_positions), path + [direction]))
 
         # Nếu không tìm thấy đường đi
-        return []
+        return [], visited_states
        
     def Astar_with_space_creation(self, snake, fruit):
         # Tìm đường đến quả táo
-        path_to_fruit = self.Astar(snake, fruit.pos)
+        path_to_fruit, visited_states = self.Astar(snake, fruit.pos)
         if path_to_fruit:
-            return path_to_fruit  # Nếu có đường đến quả táo, đi theo nó
+            return path_to_fruit,visited_states  # Nếu có đường đến quả táo, đi theo nó
 
         # Nếu không tìm thấy đường đến quả táo, tìm đường đến đuôi để tạo không gian
         tail_pos = snake.body[-1]  # Vị trí của đuôi rắn
-        path_to_tail = self.Astar(snake, tail_pos)
+        path_to_tail,visited_states = self.Astar(snake, tail_pos)
         
         if path_to_tail:
-            return path_to_tail  # Đi theo đuôi để tạo không gian
+            return path_to_tail,visited_states  # Đi theo đuôi để tạo không gian
 
         # Nếu không tìm thấy cả đường đến quả táo và đuôi, tìm một bước an toàn bất kỳ
         return self.find_safe_move(snake)    
@@ -590,6 +598,14 @@ class Main:
         UCS_button.draw_button(screen)
         GREEDY_button.draw_button(screen)
         Astar_button.draw_button(screen)
+        
+    def draw_visited_states(self, visited_states, cell_size):
+        for state in visited_states:
+            rect = pygame.Rect(state[0] * cell_size, state[1] * cell_size, cell_size, cell_size)
+            pygame.draw.rect(screen, BLACK, rect, 2)  # Viền màu xám
+    
+    
+
                 
    
 class button:
@@ -762,12 +778,14 @@ def DFS_game_loop():
         if paused:
             pygame.time.delay(100)
             continue
-        directions = main_game.Ai.DFS_with_space_creation(main_game.snake, main_game.fruit)
+        directions, visited_states = main_game.Ai.DFS_with_space_creation(main_game.snake, main_game.fruit)    
+
         if directions:
             for direction in directions:
                 main_game.snake.direction = direction
                 main_game.update()
                 main_game.draw_screen_for_AI()
+                main_game.draw_visited_states(visited_states, cell_size)
                 pygame.display.update()
                 clock.tick(60)
                 pygame.time.delay(100)
@@ -778,7 +796,6 @@ def DFS_game_loop():
             pygame.time.delay(2000)  # Hiển thị trong 2 giây
             main_game.game_over()
             
-
 def BFS_game_loop():
     paused = False
     pygame.display.set_caption('Snake game BFS')
@@ -802,13 +819,14 @@ def BFS_game_loop():
             pygame.time.delay(100)
             continue
 
-        directions = main_game.Ai.BFS_with_space_creation(main_game.snake, main_game.fruit)
+        directions, visited_states = main_game.Ai.BFS_with_space_creation(main_game.snake, main_game.fruit)
         
         if directions:
             for direction in directions:                
                 main_game.snake.direction = direction
                 main_game.update()
                 main_game.draw_screen_for_AI()
+                main_game.draw_visited_states(visited_states, cell_size)
                 pygame.display.update()
                 clock.tick(60)
                 pygame.time.delay(100)
@@ -819,7 +837,6 @@ def BFS_game_loop():
             pygame.time.delay(2000)
             main_game.game_over()
             
-
 def UCS_game_loop():
     paused = False
     pygame.display.set_caption('Snake game UCS')
@@ -842,13 +859,14 @@ def UCS_game_loop():
             pygame.time.delay(100)
             continue
 
-        directions = main_game.Ai.UCS_with_space_creation(main_game.snake, main_game.fruit)
+        directions, visited_states = main_game.Ai.UCS_with_space_creation(main_game.snake, main_game.fruit)
         
         if directions:
             for direction in directions:                
                 main_game.snake.direction = direction
                 main_game.update()
                 main_game.draw_screen_for_AI()
+                main_game.draw_visited_states(visited_states, cell_size)
                 pygame.display.update()
                 clock.tick(60)
                 pygame.time.delay(100)
@@ -881,13 +899,14 @@ def GREEDY_game_loop():
             pygame.time.delay(100)
             continue
 
-        directions = main_game.Ai.GREEDY_with_space_creation(main_game.snake, main_game.fruit)
+        directions, visited_states = main_game.Ai.GREEDY_with_space_creation(main_game.snake, main_game.fruit)
         
         if directions:
             for direction in directions:                
                 main_game.snake.direction = direction
                 main_game.update()
                 main_game.draw_screen_for_AI()
+                main_game.draw_visited_states(visited_states, cell_size)
                 pygame.display.update()
                 clock.tick(60)
                 pygame.time.delay(100)
@@ -920,13 +939,14 @@ def Astar_game_loop():
             pygame.time.delay(100)
             continue
 
-        directions = main_game.Ai.Astar_with_space_creation(main_game.snake, main_game.fruit)
+        directions,visited_states = main_game.Ai.Astar_with_space_creation(main_game.snake, main_game.fruit)
         
         if directions:
             for direction in directions:                
                 main_game.snake.direction = direction
                 main_game.update()
                 main_game.draw_screen_for_AI()
+                main_game.draw_visited_states(visited_states, cell_size)
                 pygame.display.update()
                 clock.tick(60)
                 pygame.time.delay(100)
@@ -936,6 +956,7 @@ def Astar_game_loop():
             pygame.display.update()
             pygame.time.delay(2000)
             main_game.game_over()
+
 
 def screen_for_player():
     pygame.display.set_caption('Snake game for player')
