@@ -251,7 +251,7 @@ class AI:
             visited = set(tuple((part.x, part.y) for part in snake.body[:-1]))  # Theo dõi các vị trí cơ thể đã ghé thăm
         else:
             visited = set(tuple((part.x, part.y) for part in snake.body))  # Theo dõi các vị trí cơ thể đã ghé thăm
-
+        
         while queue:
             body_positions, path = queue.popleft()
             current_head = body_positions[0]  # Đầu hiện tại của rắn
@@ -512,14 +512,19 @@ class Main:
         if self.fruit.pos == self.snake.body[0]:          
             #draw a new fruit 
             self.fruit.randomize()
+            #prevent fruit spawn on the snake
+            while self.fruit.pos in self.snake.body:
+                self.fruit.randomize()
+            
             #add another block to the snake
             self.snake.add_block()
             #play eating sound
-            self.snake.play_eat_sound()           
-            #prevent fruit spawn on the snake
-            for block in self.snake.body:
-                if block == self.fruit.pos:
-                    self.fruit.randomize()
+            self.snake.play_eat_sound()  
+            
+            # #prevent fruit spawn on the snake
+            # for block in self.snake.body:
+            #     if block == self.fruit.pos:
+            #         self.fruit.randomize()
             
     def check_fail(self):
         #check if snake go out of the screen
